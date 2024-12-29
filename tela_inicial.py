@@ -61,12 +61,13 @@ def tela_inicial(page: ft.Page):
             if user:
                 # Verifica o tipo do usuário
                 if user[3] == 'admin':  # Supondo que o tipo está na quarta coluna
-                    page.clean()
+                    page.clean()  # Limpa a tela
                     # Chama a tela de admin
                     tela_admin(page, lambda: tela_inicial(page))
                 else:
+                    
                     # Limpa a tela anterior
-                    page.clean()
+                    page.clean()  # Limpa a tela
                     # Exibe a tela de boas-vindas
                     page.add(
                         ft.Column(

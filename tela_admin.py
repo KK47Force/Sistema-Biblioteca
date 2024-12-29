@@ -25,13 +25,15 @@ def tela_admin(page: ft.Page, on_exit):
                 ft.Container(height=20),  # Adiciona um espaço fixo
                 ft.ElevatedButton(
                     text="Sair",
-                    on_click=lambda e: on_exit(),  # Chama a função de saída
+                    # Limpa a tela e chama a função de saída
+                    on_click=lambda e: (page.clean(), on_exit()),
                     style=ft.ButtonStyle(
                         bgcolor=ft.Colors.WHITE,
                         color=ft.Colors.BLUE,
                         shape=ft.RoundedRectangleBorder(radius=10)
                     )
                 )
+
             ],
             alignment=ft.MainAxisAlignment.CENTER,
             horizontal_alignment=ft.CrossAxisAlignment.CENTER,
