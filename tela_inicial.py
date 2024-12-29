@@ -52,9 +52,39 @@ def tela_inicial(page: ft.Page):
     def handle_login(email, senha):
         conn = create_connection("usuarios.db")  # Conecta ao banco de dados
         if conn:
-            add_user(conn, email, senha)  # Adiciona o usuário
+            cursor = conn.cursor()
+            cursor.execute(
+                "SELECT * FROM login WHERE email = ? AND senha = ?", (email, senha))
+            user = cursor.fetchone()
             conn.close()
-            print("Usuário adicionado:", email)
+
+            if user:
+                # Limpa a tela anterior
+                page.clean()
+                # Exibe a tela de boas-vindas
+                page.add(
+                    ft.Column(
+                        [
+                            ft.Text(f"Bem-vindo, {email}!",
+                                    size=24, color=ft.Colors.WHITE),
+                            ft.ElevatedButton(
+                                text="Sair",
+                                on_click=lambda e: page.clean() or tela_inicial(
+                                    page),  # Volta para a tela de login
+                                style=ft.ButtonStyle(
+                                    bgcolor=ft.Colors.WHITE,
+                                    color=ft.Colors.BLUE,
+                                    shape=ft.RoundedRectangleBorder(radius=10)
+                                )
+                            )
+                        ],
+                        alignment=ft.MainAxisAlignment.CENTER,
+                        horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+                        spacing=20
+                    )
+                )
+            else:
+                print("Email ou senha incorretos.")
 
     # Layout
     page.add(
