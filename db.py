@@ -1,5 +1,6 @@
 import sqlite3
 import uuid
+from datetime import datetime
 
 
 def create_connection(db_file):
@@ -15,7 +16,12 @@ def create_table(conn):
         id TEXT PRIMARY KEY,
         email TEXT NOT NULL,
         senha TEXT NOT NULL,
-        tipo TEXT NOT NULL DEFAULT 'admin'
+        tipo TEXT NOT NULL DEFAULT 'usuario',
+        nome TEXT NOT NULL,
+        cpf INTEGER NOT NULL,
+        livros_emprestados INTEGER DEFAULT 0,
+        livros_comprados INTEGER DEFAULT 0,
+        data_criacao TEXT NOT NULL
     );
     """
     cursor = conn.cursor()
@@ -24,12 +30,13 @@ def create_table(conn):
     print("Tabela 'login' criada ou já existe.")  # Mensagem de depuração
 
 
-def add_user(conn, email, senha, tipo='usuario'):
+def add_user(conn, email, senha, tipo='usuario', nome='', cpf=0):
     """Adiciona um novo usuário à tabela de login."""
     user_id = str(uuid.uuid4())  # Gera um UUID
-    sql = "INSERT INTO login (id, email, senha, tipo) VALUES (?, ?, ?, ?)"
+    data_criacao = datetime.now().strftime("%d%m%Y")  # Formato D%M%Y
+    sql = "INSERT INTO login (id, email, senha, tipo, nome, cpf, data_criacao) VALUES (?, ?, ?, ?, ?, ?, ?)"
     cursor = conn.cursor()
-    cursor.execute(sql, (user_id, email, senha, tipo))
+    cursor.execute(sql, (user_id, email, senha, tipo, nome, cpf, data_criacao))
     conn.commit()
     print(f"Usuário adicionado: {email} com tipo: {
           tipo}")  # Mensagem de depuração
@@ -50,8 +57,8 @@ def main():
         cursor.execute("SELECT COUNT(*) FROM login")
         count = cursor.fetchone()[0]
         if count == 0:
-            add_user(conn, "teste@exemplo.com", "senha123",
-                     "admin")  # Usuário de teste
+            add_user(conn, "teste@exemplo.com", "senha123", "admin",
+                     "Usuário Teste", 12345678900)  # Usuário de teste
 
         conn.close()
 
