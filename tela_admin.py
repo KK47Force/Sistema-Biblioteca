@@ -7,9 +7,9 @@ def tela_admin(page: ft.Page, on_exit):
     page.window_height = 600
 
     def navigate_to_users(e):
-        page.clean()
         import editor_usuarios
-        editor_usuarios.main(page)
+        page.clean()  # Limpa a página atual
+        editor_usuarios.tela_config(page, on_exit)  # Chama a função passando os argumentos necessários
 
     def create_menu_item(icon_name: str, text: str):
         return ft.Container(
