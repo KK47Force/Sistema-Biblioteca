@@ -5,6 +5,8 @@ from tela_admin import tela_admin  # Importa a tela admin
 
 def tela_inicial(page: ft.Page):
     page.title = "Tela 1: Login"
+    page.window_width = 800
+    page.window_height = 600
     page.bgcolor = ft.Colors.BLUE  # Atualiza para Colors
 
     # Centraliza a página
@@ -65,7 +67,7 @@ def tela_inicial(page: ft.Page):
                     # Chama a tela de admin
                     tela_admin(page, lambda: tela_inicial(page))
                 else:
-                    
+
                     # Limpa a tela anterior
                     page.clean()  # Limpa a tela
                     # Exibe a tela de boas-vindas
