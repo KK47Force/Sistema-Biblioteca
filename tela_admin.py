@@ -6,23 +6,35 @@ def tela_admin(page: ft.Page, on_exit):
     page.window_width = 800
     page.window_height = 600
 
+    def navigate_to_users(e):
+        page.clean()
+        import editor_usuarios
+        editor_usuarios.main(page)
+
     def create_menu_item(icon_name: str, text: str):
         return ft.Container(
-            content=ft.Row(
-                [
-                    ft.Icon(
-                        name=icon_name,
-                        color=ft.colors.WHITE,
-                        size=24,
-                    ),
-                    ft.Text(
-                        text,
-                        color=ft.colors.WHITE,
-                        size=16,
-                        weight="w500"
-                    )
-                ],
-                spacing=10,
+            content=ft.ElevatedButton(
+                content=ft.Row(
+                    [
+                        ft.Icon(
+                            name=icon_name,
+                            color=ft.colors.WHITE,
+                            size=24,
+                        ),
+                        ft.Text(
+                            text,
+                            color=ft.colors.WHITE,
+                            size=16,
+                            weight="w500"
+                        )
+                    ],
+                    spacing=10,
+                ),
+                style=ft.ButtonStyle(
+                    bgcolor={"": ft.colors.TRANSPARENT},
+                    shape=ft.RoundedRectangleBorder(radius=0),
+                ),
+                on_click=navigate_to_users,
             ),
             padding=ft.padding.only(left=20, top=10, bottom=10),
             margin=ft.margin.only(bottom=5),
