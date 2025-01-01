@@ -13,6 +13,54 @@ def get_all_users():
         return users
     return []
 
+def criar_barra_lateral(page: ft.Page, navegar_para):
+    """Cria a barra lateral padrão"""
+    return ft.Container(
+        width=200,
+        height=page.height,
+        bgcolor=ft.colors.BLUE,
+        content=ft.Column(
+            [
+                ft.Text("Menus", size=20, weight="bold", color=ft.colors.WHITE),
+                ft.TextButton(
+                    "Adicionar usuarios",
+                    on_click=lambda e: navegar_para("adicionar"),
+                    style=ft.ButtonStyle(
+                        color=ft.colors.WHITE,
+                        padding=10,
+                    ),
+                ),
+                ft.TextButton(
+                    "Editar usuarios",
+                    on_click=lambda e: navegar_para("editar"),
+                    style=ft.ButtonStyle(
+                        color=ft.colors.WHITE,
+                        padding=10,
+                    ),
+                ),
+                ft.TextButton(
+                    "Excluir usuarios",
+                    on_click=lambda e: navegar_para("excluir"),
+                    style=ft.ButtonStyle(
+                        color=ft.colors.WHITE,
+                        padding=10,
+                    ),
+                ),
+                ft.TextButton(
+                    "Voltar",
+                    on_click=lambda e: navegar_para("voltar"),
+                    style=ft.ButtonStyle(
+                        color=ft.colors.WHITE,
+                        padding=10,
+                    ),
+                ),
+            ],
+            spacing=0,
+            expand=True,
+        ),
+        padding=ft.padding.only(top=20),
+    )
+
 def mostrar_dialogo(page: ft.Page, titulo, mensagem, on_confirm):
     """Função global para mostrar diálogo de confirmação"""
     dlg = ft.AlertDialog(
@@ -52,6 +100,20 @@ def mostrar_alerta(page: ft.Page, mensagem, cor=ft.colors.RED_400):
     page.update()
 
 def editar_usuarios(page: ft.Page, on_exit):
+    def navegar_para(destino):
+        """Função para navegar entre as telas"""
+        page.controls.clear()
+        page.update()
+        if destino == "adicionar":
+            from editor_usuarios import adicionar_usuarios
+            adicionar_usuarios(page, on_exit)
+        elif destino == "editar":
+            editar_usuarios(page, on_exit)
+        elif destino == "excluir":
+            excluir_usuarios(page, on_exit)
+        elif destino == "voltar":
+            on_exit()
+
     page.title = "Editar Usuários"
     page.bgcolor = ft.colors.BLUE
     page.window_width = 800
@@ -244,51 +306,8 @@ def editar_usuarios(page: ft.Page, on_exit):
     page.add(
         ft.Row(
             [
-                ft.Container(
-                    width=200,
-                    height=page.height,
-                    bgcolor=ft.colors.BLUE,
-                    content=ft.Column(
-                        [
-                            ft.Text("Menus", size=20, weight="bold", color=ft.colors.WHITE),
-                            ft.ElevatedButton(
-                                "Adicionar usuarios",
-                                on_click=voltar_click,
-                                style=ft.ButtonStyle(
-                                    bgcolor=ft.colors.BLUE,
-                                    color=ft.colors.WHITE,
-                                ),
-                            ),
-                            ft.ElevatedButton(
-                                "Editar usuarios",
-                                on_click=voltar_click,
-                                style=ft.ButtonStyle(
-                                    bgcolor=ft.colors.BLUE,
-                                    color=ft.colors.WHITE,
-                                ),
-                            ),
-                            ft.ElevatedButton(
-                                "Excluir usuarios",
-                                on_click=voltar_click,
-                                style=ft.ButtonStyle(
-                                    bgcolor=ft.colors.BLUE,
-                                    color=ft.colors.WHITE,
-                                ),
-                            ),
-                            ft.ElevatedButton(
-                                "Voltar",
-                                on_click=voltar_click,
-                                style=ft.ButtonStyle(
-                                    bgcolor=ft.colors.BLUE,
-                                    color=ft.colors.WHITE,
-                                ),
-                            ),
-                        ],
-                        spacing=20,
-                        expand=True,
-                    ),
-                    padding=20,
-                ),
+                criar_barra_lateral(page, navegar_para),
+                # Linha divisória
                 ft.Container(
                     width=3,
                     height=page.height,
@@ -329,15 +348,25 @@ def editar_usuarios(page: ft.Page, on_exit):
     )
 
 def excluir_usuarios(page: ft.Page, on_exit):
+    def navegar_para(destino):
+        """Função para navegar entre as telas"""
+        page.controls.clear()
+        page.update()
+        if destino == "adicionar":
+            from editor_usuarios import adicionar_usuarios
+            adicionar_usuarios(page, on_exit)
+        elif destino == "editar":
+            editar_usuarios(page, on_exit)
+        elif destino == "excluir":
+            excluir_usuarios(page, on_exit)
+        elif destino == "voltar":
+            on_exit()
+
     page.title = "Excluir Usuários"
     page.bgcolor = ft.colors.BLUE
     page.window_width = 800
     page.window_height = 600
     page.scroll = "auto"
-
-    def voltar_click(e):
-        page.clean()
-        on_exit()
 
     def excluir_usuario(user_id):
         """Exclui um usuário do banco de dados"""
@@ -399,51 +428,8 @@ def excluir_usuarios(page: ft.Page, on_exit):
     page.add(
         ft.Row(
             [
-                ft.Container(
-                    width=200,
-                    height=page.height,
-                    bgcolor=ft.colors.BLUE,
-                    content=ft.Column(
-                        [
-                            ft.Text("Menus", size=20, weight="bold", color=ft.colors.WHITE),
-                            ft.ElevatedButton(
-                                "Adicionar usuarios",
-                                on_click=voltar_click,
-                                style=ft.ButtonStyle(
-                                    bgcolor=ft.colors.BLUE,
-                                    color=ft.colors.WHITE,
-                                ),
-                            ),
-                            ft.ElevatedButton(
-                                "Editar usuarios",
-                                on_click=voltar_click,
-                                style=ft.ButtonStyle(
-                                    bgcolor=ft.colors.BLUE,
-                                    color=ft.colors.WHITE,
-                                ),
-                            ),
-                            ft.ElevatedButton(
-                                "Excluir usuarios",
-                                on_click=voltar_click,
-                                style=ft.ButtonStyle(
-                                    bgcolor=ft.colors.BLUE,
-                                    color=ft.colors.WHITE,
-                                ),
-                            ),
-                            ft.ElevatedButton(
-                                "Voltar",
-                                on_click=voltar_click,
-                                style=ft.ButtonStyle(
-                                    bgcolor=ft.colors.BLUE,
-                                    color=ft.colors.WHITE,
-                                ),
-                            ),
-                        ],
-                        spacing=20,
-                        expand=True,
-                    ),
-                    padding=20,
-                ),
+                criar_barra_lateral(page, navegar_para),
+                # Linha divisória
                 ft.Container(
                     width=3,
                     height=page.height,

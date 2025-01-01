@@ -4,6 +4,67 @@ import db
 from editar_excluir_usuario import editar_usuarios, excluir_usuarios
 
 def adicionar_usuarios(page: ft.Page, on_exit):
+    def navegar_para(destino):
+        """Função para navegar entre as telas"""
+        page.controls.clear()  # Limpa todos os controles
+        page.update()  # Atualiza a página para refletir a limpeza
+        if destino == "adicionar":
+            adicionar_usuarios(page, on_exit)
+        elif destino == "editar":
+            editar_usuarios(page, on_exit)
+        elif destino == "excluir":
+            excluir_usuarios(page, on_exit)
+        elif destino == "voltar":
+            on_exit()
+
+    def criar_barra_lateral(page: ft.Page, navegar_para):
+        """Cria a barra lateral padrão"""
+        return ft.Container(
+            width=200,
+            height=page.height,
+            bgcolor=ft.colors.BLUE,
+            content=ft.Column(
+                [
+                    ft.Text("Menus", size=20, weight="bold", color=ft.colors.WHITE),
+                    ft.TextButton(  # Mudado para TextButton
+                        "Adicionar usuarios",
+                        on_click=lambda e: navegar_para("adicionar"),
+                        style=ft.ButtonStyle(
+                            color=ft.colors.WHITE,  # Apenas cor do texto
+                            padding=10,  # Adicionado padding
+                        ),
+                    ),
+                    ft.TextButton(  # Mudado para TextButton
+                        "Editar usuarios",
+                        on_click=lambda e: navegar_para("editar"),
+                        style=ft.ButtonStyle(
+                            color=ft.colors.WHITE,  # Apenas cor do texto
+                            padding=10,  # Adicionado padding
+                        ),
+                    ),
+                    ft.TextButton(  # Mudado para TextButton
+                        "Excluir usuarios",
+                        on_click=lambda e: navegar_para("excluir"),
+                        style=ft.ButtonStyle(
+                            color=ft.colors.WHITE,  # Apenas cor do texto
+                            padding=10,  # Adicionado padding
+                        ),
+                    ),
+                    ft.TextButton(  # Mudado para TextButton
+                        "Voltar",
+                        on_click=lambda e: navegar_para("voltar"),
+                        style=ft.ButtonStyle(
+                            color=ft.colors.WHITE,  # Apenas cor do texto
+                            padding=10,  # Adicionado padding
+                        ),
+                    ),
+                ],
+                spacing=0,  # Removido o espaçamento entre os botões
+                expand=True,
+            ),
+            padding=ft.padding.only(top=20),  # Padding apenas no topo
+        )
+
     page.title = "Adicionar Usuários"
     page.bgcolor = ft.colors.BLUE
     page.window_width = 800
@@ -174,52 +235,7 @@ def adicionar_usuarios(page: ft.Page, on_exit):
     page.add(
         ft.Row(
             [
-                # Sidebar
-                ft.Container(
-                    width=200,
-                    height=page.height,
-                    bgcolor=ft.colors.BLUE,
-                    content=ft.Column(
-                        [
-                            ft.Text("Menus", size=20, weight="bold", color=ft.colors.WHITE),
-                            ft.ElevatedButton(
-                                "Adicionar usuarios",
-                                on_click=voltar_click,
-                                style=ft.ButtonStyle(
-                                    bgcolor=ft.colors.BLUE,
-                                    color=ft.colors.WHITE,
-                                ),
-                            ),
-                            ft.ElevatedButton(
-                                "Editar usuarios",
-                                on_click=voltar_click,
-                                style=ft.ButtonStyle(
-                                    bgcolor=ft.colors.BLUE,
-                                    color=ft.colors.WHITE,
-                                ),
-                            ),
-                            ft.ElevatedButton(
-                                "Excluir usuarios",
-                                on_click=voltar_click,
-                                style=ft.ButtonStyle(
-                                    bgcolor=ft.colors.BLUE,
-                                    color=ft.colors.WHITE,
-                                ),
-                            ),
-                            ft.ElevatedButton(
-                                "Voltar",
-                                on_click=voltar_click,
-                                style=ft.ButtonStyle(
-                                    bgcolor=ft.colors.BLUE,
-                                    color=ft.colors.WHITE,
-                                ),
-                            ),
-                        ],
-                        spacing=20,
-                        expand=True,
-                    ),
-                    padding=20,
-                ),
+                criar_barra_lateral(page, navegar_para),  # Usando a função para criar a barra lateral
                 # Linha divisória
                 ft.Container(
                     width=3,
