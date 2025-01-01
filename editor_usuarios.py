@@ -1,35 +1,98 @@
 import flet as ft
 from datetime import datetime
+import db  # Importando o módulo db
 
 def adicionar_usuarios(page: ft.Page, on_exit):
     page.title = "Adicionar Usuários"
     page.bgcolor = ft.colors.BLUE
     page.window_width = 800
     page.window_height = 600
-    page.scroll = "auto"  # Adiciona scroll à página
+    page.scroll = "auto"
 
     # Obter a data atual
     data_atual = datetime.now().strftime("%d/%m/%Y")
 
     def voltar_click(e):
         page.clean()
-        on_exit()  # Retorna à tela anterior
+        on_exit()
 
-    def cadastrar_usuario(e):
-        # Lógica para cadastrar o usuário pode ser implementada aqui
-        page.snack_bar = ft.SnackBar(ft.Text("Usuário cadastrado com sucesso!"))
-        page.snack_bar.open = True
-        page.update()
-
-    # Criar inputs
+    # Criar inputs com controle de estado
     def criar_input(label):
         return ft.Column(
             [
                 ft.Text(label, color=ft.colors.WHITE, size=14),
-                ft.TextField(expand=True, height=40),
+                ft.TextField(
+                    expand=True,
+                    height=40,
+                    password=True if label in ["Senha:", "Confirmar senha:"] else False
+                ),
             ],
             spacing=5,
         )
+
+    def mostrar_alerta(mensagem):
+        page.snack_bar = ft.SnackBar(
+            content=ft.Text(mensagem),
+            bgcolor=ft.colors.RED_400
+        )
+        page.snack_bar.open = True
+        page.update()
+
+    def cadastrar_usuario(e):
+        # Obtendo os valores dos campos
+        nome = form.controls[0].controls[1].value
+        email = form.controls[1].controls[1].value
+        confirmar_email = form.controls[2].controls[1].value
+        senha = form.controls[3].controls[1].value
+        confirmar_senha = form.controls[4].controls[1].value
+        livros_emprestados = form.controls[5].controls[1].value or "0"
+        livros_comprados = form.controls[6].controls[1].value or "0"
+        cpf = form.controls[7].controls[1].value
+
+        # Validações
+        if not all([nome, email, confirmar_email, senha, confirmar_senha, cpf]):
+            mostrar_alerta("Por favor, preencha todos os campos obrigatórios!")
+            return
+
+        if email != confirmar_email:
+            mostrar_alerta("Os emails não correspondem!")
+            return
+
+        if senha != confirmar_senha:
+            mostrar_alerta("As senhas não correspondem!")
+            return
+
+        try:
+            # Conectar ao banco de dados
+            conn = db.create_connection("usuarios.db")
+            if conn:
+                # Adicionar usuário
+                db.add_user(
+                    conn=conn,
+                    email=email,
+                    senha=senha,
+                    tipo='usuario',
+                    nome=nome,
+                    cpf=int(cpf)
+                )
+                conn.close()
+                
+                # Mostrar mensagem de sucesso
+                page.snack_bar = ft.SnackBar(
+                    content=ft.Text("Usuário cadastrado com sucesso!"),
+                    bgcolor=ft.colors.GREEN_400
+                )
+                page.snack_bar.open = True
+                page.update()
+
+                # Limpar os campos
+                for column in form.controls:
+                    if isinstance(column, ft.Column) and len(column.controls) > 1:
+                        column.controls[1].value = ""
+                page.update()
+
+        except Exception as e:
+            mostrar_alerta(f"Erro ao cadastrar usuário: {str(e)}")
 
     # Layout do formulário
     form = ft.Column(
@@ -51,7 +114,7 @@ def adicionar_usuarios(page: ft.Page, on_exit):
             ),
         ],
         spacing=20,
-        scroll=ft.ScrollMode.AUTO,  # Adiciona scroll ao formulário
+        scroll=ft.ScrollMode.AUTO,
     )
 
     # Cabeçalho
@@ -90,21 +153,55 @@ def adicionar_usuarios(page: ft.Page, on_exit):
                 # Sidebar
                 ft.Container(
                     width=200,
-                    height=600,
+                    height=page.height,
                     bgcolor=ft.colors.BLUE,
                     content=ft.Column(
                         [
                             ft.Text("Menus", size=20, weight="bold", color=ft.colors.WHITE),
-                            ft.ElevatedButton("Voltar", on_click=voltar_click),
+                            ft.ElevatedButton(
+                                "Adicionar usuarios",
+                                on_click=voltar_click,
+                                style=ft.ButtonStyle(
+                                    bgcolor=ft.colors.BLUE,
+                                    color=ft.colors.WHITE,
+                                ),
+                            ),
+                            ft.ElevatedButton(
+                                "Editar usuarios",
+                                on_click=voltar_click,
+                                style=ft.ButtonStyle(
+                                    bgcolor=ft.colors.BLUE,
+                                    color=ft.colors.WHITE,
+                                ),
+                            ),
+                            ft.ElevatedButton(
+                                "Excluir usuarios",
+                                on_click=voltar_click,
+                                style=ft.ButtonStyle(
+                                    bgcolor=ft.colors.BLUE,
+                                    color=ft.colors.WHITE,
+                                ),
+                            ),
+                            ft.ElevatedButton(
+                                "Voltar",
+                                on_click=voltar_click,
+                                style=ft.ButtonStyle(
+                                    bgcolor=ft.colors.BLUE,
+                                    color=ft.colors.WHITE,
+                                ),
+                            ),
                         ],
                         spacing=20,
-                        alignment=ft.MainAxisAlignment.START,
-                        horizontal_alignment=ft.CrossAxisAlignment.START,
+                        expand=True,
                     ),
                     padding=20,
                 ),
                 # Linha divisória
-                ft.Container(width=3, height=600, bgcolor=ft.colors.BLACK),
+                ft.Container(
+                    width=3,
+                    height=page.height,
+                    bgcolor=ft.colors.BLACK,
+                ),
                 # Conteúdo principal
                 ft.Container(
                     expand=True,
@@ -117,7 +214,7 @@ def adicionar_usuarios(page: ft.Page, on_exit):
                             ft.Container(content=cadastrar_button, alignment=ft.alignment.center),
                         ],
                         spacing=20,
-                        scroll=ft.ScrollMode.AUTO,  # Adiciona scroll ao conteúdo principal
+                        scroll=ft.ScrollMode.AUTO,
                     ),
                     padding=ft.padding.symmetric(horizontal=20),
                 ),
@@ -131,7 +228,7 @@ def tela_config(page: ft.Page, on_exit):
     page.bgcolor = ft.colors.BLUE
     page.window_width = 800
     page.window_height = 600
-    page.scroll = "auto"  # Adiciona scroll à página
+    page.scroll = "auto"
 
     def on_menu_click(e):
         if e.control.text == "Adicionar usuarios":
@@ -230,7 +327,7 @@ def tela_config(page: ft.Page, on_exit):
                 expand=True,
                 spacing=0,
                 alignment=ft.MainAxisAlignment.START,
-                scroll=ft.ScrollMode.AUTO,  # Adiciona scroll ao conteúdo principal
+                scroll=ft.ScrollMode.AUTO,
             ),
             expand=True,
             padding=ft.padding.symmetric(horizontal=20, vertical=10),
