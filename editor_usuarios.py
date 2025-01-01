@@ -1,6 +1,7 @@
 import flet as ft
 from datetime import datetime
-import db  # Importando o módulo db
+import db
+from editar_excluir_usuario import editar_usuarios, excluir_usuarios
 
 def adicionar_usuarios(page: ft.Page, on_exit):
     page.title = "Adicionar Usuários"
@@ -257,6 +258,12 @@ def tela_config(page: ft.Page, on_exit):
         if e.control.text == "Adicionar usuarios":
             page.clean()
             adicionar_usuarios(page, lambda: tela_config(page, on_exit))
+        elif e.control.text == "Editar usuarios":
+            page.clean()
+            editar_usuarios(page, lambda: tela_config(page, on_exit))
+        elif e.control.text == "Excluir usuarios":
+            page.clean()
+            excluir_usuarios(page, lambda: tela_config(page, on_exit))
         elif e.control.text == "Voltar":
             page.clean()
             on_exit()
