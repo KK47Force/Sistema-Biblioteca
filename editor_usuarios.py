@@ -18,6 +18,24 @@ def adicionar_usuarios(page: ft.Page, on_exit):
 
     # Criar inputs com controle de estado
     def criar_input(label):
+        if label == "Tipo de usuário:":
+            return ft.Column(
+                [
+                    ft.Text(label, color=ft.colors.WHITE, size=14),
+                    ft.Dropdown(
+                        width=600,
+                        height=40,
+                        options=[
+                            ft.dropdown.Option("admin"),
+                            ft.dropdown.Option("usuario"),
+                            ft.dropdown.Option("coordenador"),
+                        ],
+                        value="usuario",  # Valor padrão
+                        text_size=14,
+                    ),
+                ],
+                spacing=5,
+            )
         return ft.Column(
             [
                 ft.Text(label, color=ft.colors.WHITE, size=14),
@@ -45,12 +63,13 @@ def adicionar_usuarios(page: ft.Page, on_exit):
         confirmar_email = form.controls[2].controls[1].value
         senha = form.controls[3].controls[1].value
         confirmar_senha = form.controls[4].controls[1].value
-        livros_emprestados = form.controls[5].controls[1].value or "0"
-        livros_comprados = form.controls[6].controls[1].value or "0"
-        cpf = form.controls[7].controls[1].value
+        tipo_usuario = form.controls[5].controls[1].value  # Novo campo de tipo
+        livros_emprestados = form.controls[6].controls[1].value or "0"
+        livros_comprados = form.controls[7].controls[1].value or "0"
+        cpf = form.controls[8].controls[1].value
 
         # Validações
-        if not all([nome, email, confirmar_email, senha, confirmar_senha, cpf]):
+        if not all([nome, email, confirmar_email, senha, confirmar_senha, cpf, tipo_usuario]):
             mostrar_alerta("Por favor, preencha todos os campos obrigatórios!")
             return
 
@@ -71,7 +90,7 @@ def adicionar_usuarios(page: ft.Page, on_exit):
                     conn=conn,
                     email=email,
                     senha=senha,
-                    tipo='usuario',
+                    tipo=tipo_usuario,  # Usando o tipo selecionado
                     nome=nome,
                     cpf=int(cpf)
                 )
@@ -88,7 +107,10 @@ def adicionar_usuarios(page: ft.Page, on_exit):
                 # Limpar os campos
                 for column in form.controls:
                     if isinstance(column, ft.Column) and len(column.controls) > 1:
-                        column.controls[1].value = ""
+                        if isinstance(column.controls[1], ft.Dropdown):
+                            column.controls[1].value = "usuario"  # Resetar para o valor padrão
+                        else:
+                            column.controls[1].value = ""
                 page.update()
 
         except Exception as e:
@@ -102,6 +124,7 @@ def adicionar_usuarios(page: ft.Page, on_exit):
             criar_input("Confirmar e-mail:"),
             criar_input("Senha:"),
             criar_input("Confirmar senha:"),
+            criar_input("Tipo de usuário:"),  # Novo campo
             criar_input("Livros emprestados:"),
             criar_input("Livros comprados:"),
             criar_input("CPF:"),
