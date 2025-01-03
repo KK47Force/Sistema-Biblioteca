@@ -38,6 +38,9 @@ def tela_inicial(page: ft.Page):
         border_color=ft.Colors.WHITE  # Atualiza para Colors
     )
 
+    # Mensagem de erro
+    erro_text = ft.Text("", color=ft.Colors.RED_ACCENT)
+
     # Botão de login
     login_button = ft.ElevatedButton(
         text="Login",
@@ -52,29 +55,33 @@ def tela_inicial(page: ft.Page):
 
     # Função para lidar com o login
     def handle_login(email, senha):
+        if not email or not senha:
+            erro_text.value = "Por favor, preencha todos os campos"
+            page.update()
+            return
+            
         conn = create_connection("usuarios.db")  # Conecta ao banco de dados
         if conn:
             cursor = conn.cursor()
             cursor.execute(
-                "SELECT * FROM login WHERE email = ? AND senha = ?", (email, senha))
+                "SELECT * FROM usuarios WHERE email = ? AND senha = ?", (email, senha))
             user = cursor.fetchone()
             conn.close()
 
             if user:
                 # Verifica o tipo do usuário
-                if user[3] == 'admin':  # Supondo que o tipo está na quarta coluna
+                if user[4] == 'admin':  # tipo está na quinta coluna (id, nome, email, senha, tipo)
                     page.clean()  # Limpa a tela
                     # Chama a tela de admin
                     tela_admin(page, lambda: tela_inicial(page))
                 else:
-
                     # Limpa a tela anterior
                     page.clean()  # Limpa a tela
                     # Exibe a tela de boas-vindas
                     page.add(
                         ft.Column(
                             [
-                                ft.Text(f"Bem-vindo, {email}!",
+                                ft.Text(f"Bem-vindo, {user[1]}!",  # user[1] é o nome
                                         size=24, color=ft.Colors.WHITE),
                                 ft.ElevatedButton(
                                     text="Sair",
@@ -94,21 +101,27 @@ def tela_inicial(page: ft.Page):
                         )
                     )
             else:
-                print("Email ou senha incorretos.")
+                erro_text.value = "Email ou senha incorretos"
+                page.update()
 
     # Layout
     page.add(
         ft.Column(
             [
                 nome_sistema,
-                email_label,
-                email_input,
-                senha_label,
-                senha_input,
-                login_button  # Adiciona o botão de login
+                ft.Column(
+                    [email_label, email_input],
+                    spacing=5
+                ),
+                ft.Column(
+                    [senha_label, senha_input],
+                    spacing=5
+                ),
+                erro_text,
+                login_button
             ],
-            alignment=ft.MainAxisAlignment.CENTER,  # Centraliza verticalmente
-            horizontal_alignment=ft.CrossAxisAlignment.CENTER,  # Centraliza horizontalmente
+            alignment=ft.MainAxisAlignment.CENTER,
+            horizontal_alignment=ft.CrossAxisAlignment.CENTER,
             spacing=20
         )
     )
