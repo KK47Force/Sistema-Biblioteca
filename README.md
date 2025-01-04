@@ -184,7 +184,7 @@ O sistema fornece feedback visual para:
 
 ## 📄 Licença
 
-Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
+Este projeto está sob a licença MIT. Veja o arquivo (LICENSE) para mais detalhes.
 
 ## ✨ Próximas Atualizações
 
@@ -204,7 +204,7 @@ Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para ma
 
 ## 📞 Suporte
 
-Para suporte, envie um email para [klebersonksp10@gmail.com]
+Para suporte, envie um email para klebersonksp10@gmail.com
 
 ## 🙋‍♂️ Autores
 
@@ -212,4 +212,4 @@ Para suporte, envie um email para [klebersonksp10@gmail.com]
 
 ---
 
-Desenvolvido com ❤️ por [Kleberson Santana Pinto]
+Desenvolvido com ❤️ por Kleberson Santana Pinto
