@@ -56,6 +56,7 @@ python sistema_lib.py
    - Senha: admin123
 
 3. No painel administrativo você pode:
+   - Abra a tela cheia para navegação completa
    - Visualizar e editar informações do usuário
    - Gerenciar livros
    - Gerenciar imagens
